@@ -14,7 +14,8 @@
 
 */
 
-(function($) {
+; (function ($, window, document, undefined) {
+    "use strict";
 
 	var delimiter = new Array();
 	var tags_callbacks = new Array();
@@ -74,7 +75,7 @@
   };
 
 	$.fn.addTag = function(value,options) {
-			options = jQuery.extend({focus:false,callback:true},options);
+			options = $.extend({focus:false,callback:true},options);
 			this.each(function() {
 				var id = $(this).attr('id');
 
@@ -83,7 +84,7 @@
 					tagslist = new Array();
 				}
 
-				value = jQuery.trim(value);
+				value = $.trim(value);
 
 				if (options.unique) {
 					var skipTag = $(this).tagExist(value);
@@ -143,8 +144,8 @@
 				var old = $(this).val().split(delimiter[id]);
 
 				$('#'+id+'_tagsinput .tag').remove();
-				str = '';
-				for (i=0; i< old.length; i++) {
+				var str = '';
+				for (var i=0; i< old.length; i++) {
 					if (old[i]!=value) {
 						str = str + delimiter[id] +old[i];
 					}
@@ -164,7 +165,7 @@
 	$.fn.tagExist = function(val) {
 		var id = $(this).attr('id');
 		var tagslist = $(this).val().split(delimiter[id]);
-		return (jQuery.inArray(val, tagslist) >= 0); //true when tag exists, false when not
+		return ($.inArray(val, tagslist) >= 0); //true when tag exists, false when not
 	};
 
    // clear all existing tags and import new ones from a string
@@ -175,7 +176,7 @@
    }
 
 	$.fn.tagsInput = function(options) {
-    var settings = jQuery.extend({
+    var settings = $.extend({
       interactive:true,
       defaultText:'add a tag',
       minChars:0,
@@ -211,7 +212,7 @@
 				id = $(this).attr('id', 'tags' + new Date().getTime() + (uniqueIdCounter++)).attr('id');
 			}
 
-			var data = jQuery.extend({
+			var data = $.extend({
 				pid:id,
 				real_input: '#'+id,
 				holder: '#'+id+'_tagsinput',
@@ -267,14 +268,14 @@
 						autocomplete_options[attrname] = settings.autocomplete[attrname];
 					}
 
-					if (jQuery.Autocompleter !== undefined) {
+					if ($.Autocompleter !== undefined) {
 						$(data.fake_input).autocomplete(settings.autocomplete_url, settings.autocomplete);
 						$(data.fake_input).bind('result',data,function(event,data,formatted) {
 							if (data) {
 								$('#'+id).addTag(data[0] + "",{focus:true,unique:(settings.unique)});
 							}
 					  	});
-					} else if (jQuery.ui.autocomplete !== undefined) {
+					} else if ($.ui.autocomplete !== undefined) {
 						$(data.fake_input).autocomplete(autocomplete_options);
 						$(data.fake_input).bind('autocompleteselect',data,function(event,ui) {
 							$(event.data.real_input).addTag(ui.item.value,{focus:true,unique:(settings.unique)});
@@ -351,7 +352,7 @@
 		$(obj).val('');
 		var id = $(obj).attr('id');
 		var tags = val.split(delimiter[id]);
-		for (i=0; i<tags.length; i++) {
+		for (var i=0; i<tags.length; i++) {
 			$(obj).addTag(tags[i],{focus:false,callback:false});
 		}
 		if(tags_callbacks[id] && tags_callbacks[id]['onChange'])
@@ -387,4 +388,4 @@
 
       return found;
    }
-})(jQuery);
+})(jQuery, window, document);
